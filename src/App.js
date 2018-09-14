@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import Header from './parts/Header';
+
 
 var io = require('socket.io-client');
 
@@ -23,7 +25,11 @@ class App extends Component {
     }
 
     render() {
-        return (<h1>Hello World from React!</h1>);
+        return (
+          <div>
+            <Header title="Polling App Header" />
+          </div>
+        );
     }
 }
 
