@@ -11,6 +11,7 @@ class App extends Component {
         status: 'disconnected'
       };
       this.connect = this.connect.bind(this);
+      this.disconnect = this.disconnect.bind(this);
     }
 
     componentWillMount() {
@@ -20,6 +21,7 @@ class App extends Component {
       
       // Add a listener to this socker for the connect event
       this.socket.on('connect', this.connect);
+      this.socket.on('disconnect', this.disconnect);
     }
 
     connect() {
@@ -27,6 +29,14 @@ class App extends Component {
       console.log('Connected: ' + this.socket.id);
       this.setState({
         status: 'connected'
+      });
+    }
+
+    disconnect() {
+      // Alert the user with the id of the socket connection
+      console.log('Disconnected: ' + this.socket.id);
+      this.setState({
+        status: 'disconnected'
       });
     }
 
