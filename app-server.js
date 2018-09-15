@@ -7,6 +7,8 @@ var app = express();
 // Array that will store all connections
 var connections = []
 
+var title = "Untitled Presentation";
+
 // Wire up the middleware to serve files from a folder
 app.use(express.static('./public'))
 app.use(express.static('./node_modules/bootstrap/dist'))
@@ -33,6 +35,11 @@ io.sockets.on('connection', (socket) => {
         socket.disconnect();
         console.log('Disconnected from socket. %s sockets remaining', connections.length);
     });
+
+    // Emit welcome events that will be sent to the client via the socket
+    socket.emit('welcome', {
+        title: title,
+    })
 
     connections.push(socket);
     console.log('Connected to socket %s. %s sockets connected', socket.id, connections.length)
