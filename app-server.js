@@ -1,6 +1,9 @@
 // Import the express module
 var express = require('express');
 
+// Import underscore since it provides lots of array functionality
+var _ = require('underscore');
+
 // Create an express app
 var app = express();
 
@@ -29,6 +32,15 @@ io.sockets.on('connection', (socket) => {
     // Note: We use socket.once instead of socket.on since the 
     // disconnect event will only get fired once
     socket.once('disconnect', () => {
+        // Find the member in the audience array that has the same id as the
+        // socket id that got disconnected and remove them from the audience 
+        // array. Also broadcast this to all sockets
+        var member = _.findWhere(audience, {id: this.id})
+        if (member) {
+            audience.splice(audience.indexOf(member), 1);
+            io.sockets.emit('audience', audience);
+        }
+
         // Find the index of the socket and remove it
         connections.splice(connections.indexOf(socket), 1);
 
