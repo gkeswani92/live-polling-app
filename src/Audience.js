@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Display from './parts/Display';
+import Join from './parts/Join';
 
 
 class Audience extends Component {
@@ -13,6 +14,7 @@ class Audience extends Component {
             <div> 
                 <Display if={this.props.status === 'connected'}>
                     <h1>Join the session</h1>
+                    <Join />
                 </Display>
             </div>
         );
