@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import Display from './parts/Display';
+
 
 class Audience extends Component {
     constructor(props) {
@@ -7,9 +10,17 @@ class Audience extends Component {
     }
     render() { 
         return (
-            <h1>Audience: {this.props.status}</h1>
+            <div> 
+                <Display if={this.props.status === 'connected'}>
+                    <h1>Join the session</h1>
+                </Display>
+            </div>
         );
     }
 }
- 
+
+Audience.propTypes = {
+    status: PropTypes.string.isRequired,
+}
+
 export default Audience;
