@@ -3,6 +3,7 @@ import Header from './parts/Header';
 import Audience from './Audience';
 import Speaker from './Speaker';
 import Board from './Board';
+import Error from './Error';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 var io = require('socket.io-client');
@@ -72,9 +73,11 @@ class App extends Component {
                   return (<Board />);
                 }} />
 
-                <Route render={(props) => {
+                <Route exact path="/" render={(props) => {
                   return (<Audience {... this.state} />);
                 }} />
+
+                <Route component={Error} />
 
               </Switch>
             </div>
