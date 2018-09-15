@@ -61,9 +61,21 @@ class App extends Component {
               same header */}
               <Header title={this.state.title} status={this.state.status} />
               <Switch>
-                <Route path="/speaker" component={Speaker} />
-                <Route path="/board" component={Board} />
-                <Route component={Audience} />
+
+                {/* Pass in the entire state as props to the Speaker component
+                by using the JSX spread operator */}
+                <Route path="/speaker" render={() => {
+                  return (<Speaker {... this.state} />);
+                }} />
+
+                <Route path="/board" render={() => {
+                  return (<Board />);
+                }} />
+
+                <Route render={(props) => {
+                  return (<Audience {... this.state} />);
+                }} />
+
               </Switch>
             </div>
           </BrowserRouter>
