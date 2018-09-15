@@ -4,8 +4,9 @@ var express = require('express');
 // Create an express app
 var app = express();
 
-// Array that will store all connections
+// Array that will store all connections and audience members
 var connections = []
+var audience = []
 
 var title = "Untitled Presentation";
 
@@ -38,15 +39,20 @@ io.sockets.on('connection', (socket) => {
 
     socket.on('join', (payload) => {
         var newMember = {
-            id: this, // the current socket
+            id: this.id, // the current socket
             name: payload.name,
         }
+        audience.push(newMember);
         console.log('Audience joined %s', newMember.name);
 
         // Send a confirmation event back to the client acknowledging that the 
         // newMember data has been received
         socket.emit('joined', newMember);
 
+        // Update all connected sockets with new audience data by broadcasting 
+        // it to all sockets
+        console.log('Broadcasting entire audience to all sockets');
+        io.sockets.emit('audience', audience);
     });
 
     // Emit welcome events that will be sent to the client via the socket
