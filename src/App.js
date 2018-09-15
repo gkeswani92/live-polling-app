@@ -41,6 +41,14 @@ class App extends Component {
     connect() {
       // Alert the user with the id of the socket connection
       console.log('Connected: ' + this.socket.id);
+      
+      // If there is a member in the session storage, set the member to that member, else null.
+      // And if we did find a member, emit the join event to the server
+      var member = (sessionStorage.member) ? JSON.parse(sessionStorage.member) : null;
+      if (member) {
+        this.emit('join', member);
+      }
+
       this.setState({
         status: 'connected'
       });
@@ -67,6 +75,8 @@ class App extends Component {
     }
 
     joined(member) {
+      // Save the member object in session storage 
+      sessionStorage.member = JSON.stringify(member);
       this.setState({
         member: member,
       });
