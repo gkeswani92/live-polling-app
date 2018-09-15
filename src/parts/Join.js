@@ -3,14 +3,16 @@ import React, { Component } from 'react';
 class Join extends Component {
     constructor(props) {
         super(props);
-        this.state = {}
         this.join = this.join.bind(this);
     }
 
     join() {
         // Access the value in the DOM element referred to by this.refs.name
+        // and emit a join event with that name
         var memberName = this.refs.name.value;
-        console.log(memberName);
+        this.props.emit('join', {
+            name: memberName,
+        });
     }
 
     render() { 

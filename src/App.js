@@ -18,6 +18,7 @@ class App extends Component {
       this.connect = this.connect.bind(this);
       this.disconnect = this.disconnect.bind(this);
       this.welcome = this.welcome.bind(this);
+      this.emit = this.emit.bind(this);
     }
 
     componentWillMount() {
@@ -54,6 +55,11 @@ class App extends Component {
       });
     }
 
+    emit(eventName, payload) {
+      // Emit the event and payload on the socket that is connected to the backend
+      this.socket.emit(eventName, payload);
+    }
+
     render() {
         return (
           <BrowserRouter>
@@ -74,7 +80,7 @@ class App extends Component {
                 }} />
 
                 <Route exact path="/" render={(props) => {
-                  return (<Audience {... this.state} />);
+                  return (<Audience emit={this.emit} {... this.state} />);
                 }} />
 
                 <Route component={Error} />

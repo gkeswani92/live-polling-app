@@ -36,6 +36,10 @@ io.sockets.on('connection', (socket) => {
         console.log('Disconnected from socket. %s sockets remaining', connections.length);
     });
 
+    socket.once('join', (payload) => {
+        console.log(payload.name);
+    });
+
     // Emit welcome events that will be sent to the client via the socket
     socket.emit('welcome', {
         title: title,
