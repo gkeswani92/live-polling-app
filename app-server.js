@@ -36,8 +36,17 @@ io.sockets.on('connection', (socket) => {
         console.log('Disconnected from socket. %s sockets remaining', connections.length);
     });
 
-    socket.once('join', (payload) => {
-        console.log(payload.name);
+    socket.on('join', (payload) => {
+        var newMember = {
+            id: this, // the current socket
+            name: payload.name,
+        }
+        console.log('Audience joined %s', newMember.name);
+
+        // Send a confirmation event back to the client acknowledging that the 
+        // newMember data has been received
+        socket.emit('joined', newMember);
+
     });
 
     // Emit welcome events that will be sent to the client via the socket

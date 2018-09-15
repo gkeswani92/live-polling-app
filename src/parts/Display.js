@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 
 class Display extends Component {
@@ -15,9 +14,5 @@ class Display extends Component {
         );
     }
 }
- 
-Display.propTypes = {
-    if: PropTypes.bool,
-};
 
 export default Display;

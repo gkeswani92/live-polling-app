@@ -12,9 +12,21 @@ class Audience extends Component {
     render() { 
         return (
             <div> 
+                {/* Display the below content only if the socket connection is active */}
                 <Display if={this.props.status === 'connected'}>
-                    <h1>Join the session</h1>
-                    <Join emit={this.props.emit} />
+
+                    {/* Display the list of audience members if we have a member name */}
+                    <Display if={this.props.member.name}>
+                        <h2>Welcome {this.props.member.name}</h2>
+                        <p>Questions will appear here.</p>
+                    </Display>
+
+                    {/* Display the Join form if there is no member name */}
+                    <Display if={!this.props.member.name}>
+                        <h1>Join the session</h1>
+                        <Join emit={this.props.emit} />
+                    </Display>
+
                 </Display>
             </div>
         );

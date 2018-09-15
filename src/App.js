@@ -14,11 +14,13 @@ class App extends Component {
       this.state = {
         status: 'disconnected',
         title: '',
+        member: {},
       };
       this.connect = this.connect.bind(this);
       this.disconnect = this.disconnect.bind(this);
       this.welcome = this.welcome.bind(this);
       this.emit = this.emit.bind(this);
+      this.joined = this.joined.bind(this);
     }
 
     componentWillMount() {
@@ -30,6 +32,7 @@ class App extends Component {
       this.socket.on('connect', this.connect);
       this.socket.on('disconnect', this.disconnect);
       this.socket.on('welcome', this.welcome);
+      this.socket.on('joined', this.joined);
     }
 
     connect() {
@@ -58,6 +61,12 @@ class App extends Component {
     emit(eventName, payload) {
       // Emit the event and payload on the socket that is connected to the backend
       this.socket.emit(eventName, payload);
+    }
+
+    joined(member) {
+      this.setState({
+        member: member,
+      });
     }
 
     render() {
