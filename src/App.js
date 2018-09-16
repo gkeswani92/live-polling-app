@@ -17,6 +17,7 @@ class App extends Component {
         member: {},  // member that is using this particular socket
         audience: {},  //  information about the entire audience for this presentation
         speaker: '',  // information about who is giving the presentation
+        questions: [],
       };
       this.connect = this.connect.bind(this);
       this.disconnect = this.disconnect.bind(this);

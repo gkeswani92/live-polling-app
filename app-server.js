@@ -11,6 +11,7 @@ var app = express();
 var connections = []
 var audience = []
 var speaker = {}
+var questions = require('./app-questions');
 
 var title = "Untitled Presentation";
 
@@ -101,7 +102,8 @@ io.sockets.on('connection', (socket) => {
         title: title,
         audience: audience, 
         speaker: speaker.name,
-    })
+        questions: questions,
+    });
 
     connections.push(socket);
     console.log('Connected to socket %s. %s sockets connected', socket.id, connections.length)
