@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Display from './parts/Display';
 import JoinSpeaker from './parts/JoinSpeaker';
 import Attendance from './parts/Attendance';
+import Questions from './parts/Questions';
 
 
 class Speaker extends Component {
@@ -19,7 +20,7 @@ class Speaker extends Component {
                     
                     {/* Display the attendance and question form if we have a member who is the speaker */}
                     <Display if={this.props.member.name && this.props.member.type === 'speaker'} >
-                        <p>Questions</p>
+                        <Questions questions={this.props.questions} />
                         <Attendance audience={this.props.audience} />
                     </Display>
 

@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
 
 class Attendance extends Component {
@@ -36,10 +35,6 @@ class Attendance extends Component {
             </div>
         );
     }
-}
-
-Attendance.propTypes = {
-    audience: PropTypes.array,
 }
  
 
