@@ -36,10 +36,20 @@ io.sockets.on('connection', (socket) => {
         // Find the member in the audience array that has the same id as the
         // socket id that got disconnected and remove them from the audience 
         // array. Also broadcast this to all sockets
-        var member = _.findWhere(audience, {id: this.id})
+        var member = _.findWhere(audience, {id: socket.id})
         if (member) {
             audience.splice(audience.indexOf(member), 1);
             io.sockets.emit('audience', audience);
+        } else if(socket.id == speaker.id) {
+            // Reset the speaker details and broadcast to the audience
+            console.log('Speaker has left!');
+            speaker = {};
+            title = 'Untitled Presentation';
+
+            io.sockets.emit('end', {
+                title: title,
+                speaker: '',
+            });
         }
 
         // Find the index of the socket and remove it
@@ -52,7 +62,7 @@ io.sockets.on('connection', (socket) => {
 
     socket.on('join', (payload) => {
         var newMember = {
-            id: this.id, // the current socket
+            id: socket.id, // the current socket
             name: payload.name,
             type: 'member', // will be used to differentiate between speaker and members
         }
@@ -70,7 +80,7 @@ io.sockets.on('connection', (socket) => {
     });
 
     socket.on('start', (payload) => {
-        speaker.id = this.id;
+        speaker.id = socket.id;
         speaker.name = payload.name;
         speaker.type = 'speaker';
         title = payload.title;

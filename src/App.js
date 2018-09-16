@@ -38,6 +38,7 @@ class App extends Component {
       this.socket.on('joined', this.joined);
       this.socket.on('audience', this.updateAudience);
       this.socket.on('start', this.updateState);
+      this.socket.on('end', this.updateState);
     }
 
     connect() {
