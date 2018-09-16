@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+
 
 class Join extends Component {
     constructor(props) {
@@ -26,6 +28,7 @@ class Join extends Component {
                        placeholder="Enter your full name"
                        required />
                 <button className="btn btn-primary">Join</button>
+                <Link to="/speaker">Join as Speaker</Link>
             </form>
         );
     }

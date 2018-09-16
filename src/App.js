@@ -14,15 +14,17 @@ class App extends Component {
       this.state = {
         status: 'disconnected',
         title: '',
-        member: {},
-        audience: {},
+        member: {},  // member that is using this particular socket
+        audience: {},  //  information about the entire audience for this presentation
+        speaker: '',  // information about who is giving the presentation
       };
       this.connect = this.connect.bind(this);
       this.disconnect = this.disconnect.bind(this);
-      this.welcome = this.welcome.bind(this);
+      this.updateState = this.updateState.bind(this);
       this.emit = this.emit.bind(this);
       this.joined = this.joined.bind(this);
       this.updateAudience = this.updateAudience.bind(this);
+      this.startPresentation = this.startPresentation.bind(this);
     }
 
     componentWillMount() {
@@ -33,9 +35,11 @@ class App extends Component {
       // Add a listener to this socket for the mentioned events
       this.socket.on('connect', this.connect);
       this.socket.on('disconnect', this.disconnect);
-      this.socket.on('welcome', this.welcome);
+      this.socket.on('welcome', this.updateState);
       this.socket.on('joined', this.joined);
       this.socket.on('audience', this.updateAudience);
+      this.socket.on('start', this.startPresentation);
+      this.socket.on('end', this.updateState);
     }
 
     connect() {
@@ -45,8 +49,17 @@ class App extends Component {
       // If there is a member in the session storage, set the member to that member, else null.
       // And if we did find a member, emit the join event to the server
       var member = (sessionStorage.member) ? JSON.parse(sessionStorage.member) : null;
-      if (member) {
+      if (member && member.type === 'audience') {
+        console.log('Rejoining an audience member from session storage');
         this.emit('join', member);
+      } 
+      else if (member && member.type === 'speaker') {
+        // Automatically rejoin the speaker and update the title from session storage
+        console.log('Rejoining the speaker from session storage');
+        this.emit('start', {
+          name: member.name,
+          title: sessionStorage.title,
+        })
       }
 
       this.setState({
@@ -58,15 +71,15 @@ class App extends Component {
       // Alert the user with the id of the socket connection
       console.log('Disconnected: ' + this.socket.id);
       this.setState({
-        status: 'disconnected'
+        status: 'disconnected',
+        title: 'Disconnected',
+        speaker: '',
       });
     }
 
-    welcome(serverState) {
-      // Event handlers for the welcome event on the socket
-      this.setState({
-        title: serverState.title,
-      });
+    updateState(serverState) {
+      // Event handler for the welcome event on the socket
+      this.setState(serverState);
     }
 
     emit(eventName, payload) {
@@ -88,19 +101,32 @@ class App extends Component {
       })
     }
 
+    startPresentation(presentation) {
+      // Store the title of the presentation
+      if(this.state.member.type === 'speaker') {
+        console.log('Storing the title of the presentation in session storage');
+        sessionStorage.title = presentation.title;
+      }
+      this.setState(presentation);
+    }
+
     render() {
         return (
           <BrowserRouter>
             <div>
               {/* Keep Header out of the Switch because we always display the 
               same header */}
-              <Header title={this.state.title} status={this.state.status} />
+              <Header 
+                title={this.state.title} 
+                status={this.state.status}
+                speaker={this.state.speaker}
+              />
               <Switch>
 
                 {/* Pass in the entire state as props to the Speaker component
                 by using the JSX spread operator */}
                 <Route path="/speaker" render={() => {
-                  return (<Speaker {... this.state} />);
+                  return (<Speaker emit={this.emit} {... this.state} />);
                 }} />
 
                 <Route path="/board" render={() => {

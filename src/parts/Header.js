@@ -8,6 +8,7 @@ class Header extends Component {
             <header className="row">
                 <div className="col-xs-10">
                     <h1>{this.props.title}</h1>
+                    <p>{this.props.speaker}</p>
                 </div>
                 <div className="col-xs-2">
                     <span id="connection-status" className={this.props.status}></span>
@@ -19,7 +20,8 @@ class Header extends Component {
 
 // Defining prop types for property type validation
 Header.propTypes = {
-    title: PropTypes.string.isRequired
+    title: PropTypes.string.isRequired,
+    speaker: PropTypes.string,
 };
 
 // Default value of the property that should be used if not passed in

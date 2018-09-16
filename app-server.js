@@ -10,6 +10,7 @@ var app = express();
 // Array that will store all connections and audience members
 var connections = []
 var audience = []
+var speaker = {}
 
 var title = "Untitled Presentation";
 
@@ -35,10 +36,20 @@ io.sockets.on('connection', (socket) => {
         // Find the member in the audience array that has the same id as the
         // socket id that got disconnected and remove them from the audience 
         // array. Also broadcast this to all sockets
-        var member = _.findWhere(audience, {id: this.id})
+        var member = _.findWhere(audience, {id: socket.id})
         if (member) {
             audience.splice(audience.indexOf(member), 1);
             io.sockets.emit('audience', audience);
+        } else if(socket.id == speaker.id) {
+            // Reset the speaker details and broadcast to the audience
+            console.log('Speaker has left!');
+            speaker = {};
+            title = 'Untitled Presentation';
+
+            io.sockets.emit('end', {
+                title: title,
+                speaker: '',
+            });
         }
 
         // Find the index of the socket and remove it
@@ -51,8 +62,9 @@ io.sockets.on('connection', (socket) => {
 
     socket.on('join', (payload) => {
         var newMember = {
-            id: this.id, // the current socket
+            id: socket.id, // the current socket
             name: payload.name,
+            type: 'member', // will be used to differentiate between speaker and members
         }
         audience.push(newMember);
         console.log('Audience joined %s', newMember.name);
@@ -67,9 +79,28 @@ io.sockets.on('connection', (socket) => {
         io.sockets.emit('audience', audience);
     });
 
+    socket.on('start', (payload) => {
+        speaker.id = socket.id;
+        speaker.name = payload.name;
+        speaker.type = 'speaker';
+        title = payload.title;
+
+        // Emit the joined event for the speaker confirming that they have joined
+        socket.emit('joined', speaker);
+        console.log('Presentation has been started by %s', speaker.name);
+
+        // Broadcast to all clients that the speaker has joined and set the title
+        io.sockets.emit('start', {
+            title: title,
+            speaker: speaker.name,
+        });
+    });
+
     // Emit welcome events that will be sent to the client via the socket
     socket.emit('welcome', {
         title: title,
+        audience: audience, 
+        speaker: speaker.name,
     })
 
     connections.push(socket);
