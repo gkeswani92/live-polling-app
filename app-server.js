@@ -10,6 +10,7 @@ var app = express();
 // Array that will store all connections and audience members
 var connections = []
 var audience = []
+var speaker = {}
 
 var title = "Untitled Presentation";
 
@@ -53,6 +54,7 @@ io.sockets.on('connection', (socket) => {
         var newMember = {
             id: this.id, // the current socket
             name: payload.name,
+            type: 'member', // will be used to differentiate between speaker and members
         }
         audience.push(newMember);
         console.log('Audience joined %s', newMember.name);
@@ -65,6 +67,16 @@ io.sockets.on('connection', (socket) => {
         // it to all sockets
         console.log('Broadcasting entire audience to all sockets');
         io.sockets.emit('audience', audience);
+    });
+
+    socket.on('start', (payload) => {
+        speaker.id = this.id;
+        speaker.name = payload.name;
+        speaker.type = 'speaker';
+
+        // Emit the joined event for the speaker confirming that they have joined
+        socket.emit('joined', speaker);
+        console.log('Presentation has been started by %s', speaker.name);
     });
 
     // Emit welcome events that will be sent to the client via the socket

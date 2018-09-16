@@ -14,8 +14,9 @@ class App extends Component {
       this.state = {
         status: 'disconnected',
         title: '',
-        member: {},
-        audience: {},
+        member: {},  // member that is using this particular socket
+        audience: {},  //  information about the entire audience for this presentation
+        speaker: {},  // information about who is giving the presentation and info about that
       };
       this.connect = this.connect.bind(this);
       this.disconnect = this.disconnect.bind(this);
@@ -100,7 +101,7 @@ class App extends Component {
                 {/* Pass in the entire state as props to the Speaker component
                 by using the JSX spread operator */}
                 <Route path="/speaker" render={() => {
-                  return (<Speaker {... this.state} />);
+                  return (<Speaker emit={this.emit} {... this.state} />);
                 }} />
 
                 <Route path="/board" render={() => {
