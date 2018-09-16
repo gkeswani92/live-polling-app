@@ -24,6 +24,7 @@ class App extends Component {
       this.emit = this.emit.bind(this);
       this.joined = this.joined.bind(this);
       this.updateAudience = this.updateAudience.bind(this);
+      this.startPresentation = this.startPresentation.bind(this);
     }
 
     componentWillMount() {
@@ -37,7 +38,7 @@ class App extends Component {
       this.socket.on('welcome', this.updateState);
       this.socket.on('joined', this.joined);
       this.socket.on('audience', this.updateAudience);
-      this.socket.on('start', this.updateState);
+      this.socket.on('start', this.startPresentation);
       this.socket.on('end', this.updateState);
     }
 
@@ -48,8 +49,17 @@ class App extends Component {
       // If there is a member in the session storage, set the member to that member, else null.
       // And if we did find a member, emit the join event to the server
       var member = (sessionStorage.member) ? JSON.parse(sessionStorage.member) : null;
-      if (member) {
+      if (member && member.type === 'audience') {
+        console.log('Rejoining an audience member from session storage');
         this.emit('join', member);
+      } 
+      else if (member && member.type === 'speaker') {
+        // Automatically rejoin the speaker and update the title from session storage
+        console.log('Rejoining the speaker from session storage');
+        this.emit('start', {
+          name: member.name,
+          title: sessionStorage.title,
+        })
       }
 
       this.setState({
@@ -61,7 +71,9 @@ class App extends Component {
       // Alert the user with the id of the socket connection
       console.log('Disconnected: ' + this.socket.id);
       this.setState({
-        status: 'disconnected'
+        status: 'disconnected',
+        title: 'Disconnected',
+        speaker: '',
       });
     }
 
@@ -87,6 +99,15 @@ class App extends Component {
       this.setState({
         audience: newAudience,
       })
+    }
+
+    startPresentation(presentation) {
+      // Store the title of the presentation
+      if(this.state.member.type === 'speaker') {
+        console.log('Storing the title of the presentation in session storage');
+        sessionStorage.title = presentation.title;
+      }
+      this.setState(presentation);
     }
 
     render() {
