@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Display from './parts/Display';
 import JoinSpeaker from './parts/JoinSpeaker';
+import Attendance from './parts/Attendance';
 
 
 class Speaker extends Component {
@@ -8,6 +9,7 @@ class Speaker extends Component {
         super(props);
         this.state = {}
     }
+
     render() { 
         return (
             <div>
@@ -18,7 +20,7 @@ class Speaker extends Component {
                     {/* Display the attendance and question form if we have a member who is the speaker */}
                     <Display if={this.props.member.name && this.props.member.type === 'speaker'} >
                         <p>Questions</p>
-                        <p>Attendance</p>
+                        <Attendance audience={this.props.audience} />
                     </Display>
 
                     {/* Display the speaker join form is we do not have a member */}
