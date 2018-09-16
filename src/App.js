@@ -16,11 +16,11 @@ class App extends Component {
         title: '',
         member: {},  // member that is using this particular socket
         audience: {},  //  information about the entire audience for this presentation
-        speaker: {},  // information about who is giving the presentation and info about that
+        speaker: '',  // information about who is giving the presentation
       };
       this.connect = this.connect.bind(this);
       this.disconnect = this.disconnect.bind(this);
-      this.welcome = this.welcome.bind(this);
+      this.updateState = this.updateState.bind(this);
       this.emit = this.emit.bind(this);
       this.joined = this.joined.bind(this);
       this.updateAudience = this.updateAudience.bind(this);
@@ -34,9 +34,10 @@ class App extends Component {
       // Add a listener to this socket for the mentioned events
       this.socket.on('connect', this.connect);
       this.socket.on('disconnect', this.disconnect);
-      this.socket.on('welcome', this.welcome);
+      this.socket.on('welcome', this.updateState);
       this.socket.on('joined', this.joined);
       this.socket.on('audience', this.updateAudience);
+      this.socket.on('start', this.updateState);
     }
 
     connect() {
@@ -63,11 +64,9 @@ class App extends Component {
       });
     }
 
-    welcome(serverState) {
-      // Event handlers for the welcome event on the socket
-      this.setState({
-        title: serverState.title,
-      });
+    updateState(serverState) {
+      // Event handler for the welcome event on the socket
+      this.setState(serverState);
     }
 
     emit(eventName, payload) {
@@ -95,7 +94,11 @@ class App extends Component {
             <div>
               {/* Keep Header out of the Switch because we always display the 
               same header */}
-              <Header title={this.state.title} status={this.state.status} />
+              <Header 
+                title={this.state.title} 
+                status={this.state.status}
+                speaker={this.state.speaker}
+              />
               <Switch>
 
                 {/* Pass in the entire state as props to the Speaker component

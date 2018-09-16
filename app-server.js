@@ -73,15 +73,24 @@ io.sockets.on('connection', (socket) => {
         speaker.id = this.id;
         speaker.name = payload.name;
         speaker.type = 'speaker';
+        title = payload.title;
 
         // Emit the joined event for the speaker confirming that they have joined
         socket.emit('joined', speaker);
         console.log('Presentation has been started by %s', speaker.name);
+
+        // Broadcast to all clients that the speaker has joined and set the title
+        io.sockets.emit('start', {
+            title: title,
+            speaker: speaker.name,
+        });
     });
 
     // Emit welcome events that will be sent to the client via the socket
     socket.emit('welcome', {
         title: title,
+        audience: audience, 
+        speaker: speaker.name,
     })
 
     connections.push(socket);
