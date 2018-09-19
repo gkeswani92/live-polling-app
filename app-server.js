@@ -13,6 +13,12 @@ var audience = []
 var speaker = {}
 var questions = require('./app-questions');
 var currentQuestion = false; // no question is being asked in the beginning
+var result = { // object to store audience response
+    a: 0,
+    b: 0,
+    c: 0,
+    d: 0,
+};
 
 var title = "Untitled Presentation";
 
@@ -101,7 +107,22 @@ io.sockets.on('connection', (socket) => {
     socket.on('ask', (question) => {
         // When the speaker asks a question, broadcast it to all clients
         console.log('Question asked %s', question.q);
+
+        // Reset the result for responses
+        result = { 
+            a: 0,
+            b: 0,
+            c: 0,
+            d: 0,
+        };
+        
         io.sockets.emit('ask', question);
+    });
+
+    socket.on('answer', (payload) => {
+        // When the audience answers a question, increment the number of responses
+        // for that option
+        result[payload.choice]++;
     });
 
     // Emit welcome events that will be sent to the client via the socket

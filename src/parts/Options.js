@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
+import Display from './Display';
 
 class Options extends Component {
     constructor(props) {
         super(props);
         this.state = {
             choices: [],
+            answer: undefined,
         }
         this.addChoice = this.addChoice.bind(this);
+        this.selectChoice = this.selectChoice.bind(this);
     }
 
     componentWillMount() {
@@ -25,13 +28,32 @@ class Options extends Component {
         choices.shift();
         this.setState({
             choices: choices,
+            answer: sessionStorage.answer,
+        });
+    }
+
+    selectChoice(choice) {
+        console.log('User has selected choice %s', choice);
+        this.setState({
+            answer: choice,
+        });
+        sessionStorage.answer = choice;
+        this.props.emit('answer', {
+            question: this.props.question,
+            choice: choice,
         });
     }
 
     addChoice(choice, i) {
         var buttonTypes = ['primary', 'success', 'warning', 'danger']
         return (
-            <button key={i} className={"col-xs-12 col-sm-6 col-md-3 btn btn-" + buttonTypes[i]}> 
+            <button 
+                key={i} 
+                className={"col-xs-12 col-sm-6 col-md-3 btn btn-" + buttonTypes[i]}
+                onClick={() => {
+                    this.selectChoice(choice);
+                }}
+            > 
                 {choice}: {this.props.question[choice]}
             </button>
         )
@@ -40,10 +62,16 @@ class Options extends Component {
     render() { 
         return (
             <div id="currentQuestion">
-                <h2>{this.props.question.q}</h2>
-                <div className="row">
-                    {this.state.choices.map(this.addChoice)}
-                </div>
+                <Display if={!this.state.answer}>
+                    <h2>{this.props.question.q}</h2>
+                    <div className="row">
+                        {this.state.choices.map(this.addChoice)}
+                    </div>
+                </Display>
+
+                <Display if={this.state.answer}>
+                    <h3>You answered {this.state.answer}</h3>
+                </Display>
             </div>
         );
     }

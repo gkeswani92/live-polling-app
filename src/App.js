@@ -116,6 +116,7 @@ class App extends Component {
 
     askQuestion(question) {
       console.log(question); 
+      sessionStorage.answer = "";
       this.setState({
         currentQuestion: question,
       })

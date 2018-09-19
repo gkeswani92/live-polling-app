@@ -24,7 +24,7 @@ class Audience extends Component {
                             <p>{this.props.audience.length} audience members connected.</p>    
                         </Display>
                         <Display if={this.props.currentQuestion}>
-                            <Options question={this.props.currentQuestion} />
+                            <Options question={this.props.currentQuestion} emit={this.props.emit} />
                         </Display>
 
                     </Display>
