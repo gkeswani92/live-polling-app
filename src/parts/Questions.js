@@ -5,13 +5,21 @@ class Questions extends Component {
         super(props);
         this.state = {}
         this.addQuestion = this.addQuestion.bind(this);
+        this.askQuestion = this.askQuestion.bind(this);
+    }
+
+    askQuestion(question) {
+        console.log('Asked questions %s', question);
+        // emit an ask event and send the question to the server
+        this.props.emit('ask', question);
     }
 
     addQuestion(question, i) {
         return (
             <div key={i} className="col-xs-12 col-sm-6 col-md-3">
-                <span>{question.q}</span>
-
+                {/* the onclick property of this span calls the askQuestion method 
+                with that question */}
+                <span onClick={() => {this.askQuestion(question)}}>{question.q}</span>
             </div>
         )
     }

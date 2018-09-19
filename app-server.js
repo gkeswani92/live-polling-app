@@ -12,6 +12,7 @@ var connections = []
 var audience = []
 var speaker = {}
 var questions = require('./app-questions');
+var currentQuestion = false; // no question is being asked in the beginning
 
 var title = "Untitled Presentation";
 
@@ -97,12 +98,19 @@ io.sockets.on('connection', (socket) => {
         });
     });
 
+    socket.on('ask', (question) => {
+        // When the speaker asks a question, broadcast it to all clients
+        console.log('Question asked %s', question.q);
+        io.sockets.emit('ask', question);
+    });
+
     // Emit welcome events that will be sent to the client via the socket
     socket.emit('welcome', {
         title: title,
         audience: audience, 
         speaker: speaker.name,
         questions: questions,
+        currentQuestion: currentQuestion,
     });
 
     connections.push(socket);

@@ -20,7 +20,7 @@ class Speaker extends Component {
                     
                     {/* Display the attendance and question form if we have a member who is the speaker */}
                     <Display if={this.props.member.name && this.props.member.type === 'speaker'} >
-                        <Questions questions={this.props.questions} />
+                        <Questions questions={this.props.questions} emit={this.props.emit} />
                         <Attendance audience={this.props.audience} />
                     </Display>
 

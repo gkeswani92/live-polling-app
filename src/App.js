@@ -18,6 +18,7 @@ class App extends Component {
         audience: {},  //  information about the entire audience for this presentation
         speaker: '',  // information about who is giving the presentation
         questions: [],
+        currentQuestion: false,
       };
       this.connect = this.connect.bind(this);
       this.disconnect = this.disconnect.bind(this);
@@ -26,6 +27,7 @@ class App extends Component {
       this.joined = this.joined.bind(this);
       this.updateAudience = this.updateAudience.bind(this);
       this.startPresentation = this.startPresentation.bind(this);
+      this.askQuestion = this.askQuestion.bind(this);
     }
 
     componentWillMount() {
@@ -41,6 +43,7 @@ class App extends Component {
       this.socket.on('audience', this.updateAudience);
       this.socket.on('start', this.startPresentation);
       this.socket.on('end', this.updateState);
+      this.socket.on('ask', this.askQuestion);
     }
 
     connect() {
@@ -109,6 +112,13 @@ class App extends Component {
         sessionStorage.title = presentation.title;
       }
       this.setState(presentation);
+    }
+
+    askQuestion(question) {
+      console.log(question); 
+      this.setState({
+        currentQuestion: question,
+      })
     }
 
     render() {

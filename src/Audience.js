@@ -17,9 +17,15 @@ class Audience extends Component {
 
                     {/* Display the list of audience members if we have a member name */}
                     <Display if={this.props.member.name}>
-                        <h2>Welcome {this.props.member.name}</h2>
-                        <p>{this.props.audience.length} audience members connected.</p>
-                        <p>Questions will appear here.</p>
+                        
+                        <Display if={!this.props.currentQuestion}>
+                            <h2>Welcome {this.props.member.name}</h2>
+                            <p>{this.props.audience.length} audience members connected.</p>    
+                        </Display>
+                        <Display if={this.props.currentQuestion}>
+                            <h2>{this.props.currentQuestion.q}</h2>
+                        </Display>
+
                     </Display>
 
                     {/* Display the Join form if there is no member name */}
