@@ -19,6 +19,7 @@ class App extends Component {
         speaker: '',  // information about who is giving the presentation
         questions: [],
         currentQuestion: false,
+        results: {},
       };
       this.connect = this.connect.bind(this);
       this.disconnect = this.disconnect.bind(this);
@@ -28,6 +29,7 @@ class App extends Component {
       this.updateAudience = this.updateAudience.bind(this);
       this.startPresentation = this.startPresentation.bind(this);
       this.askQuestion = this.askQuestion.bind(this);
+      this.updateResults = this.updateResults.bind(this);
     }
 
     componentWillMount() {
@@ -44,6 +46,7 @@ class App extends Component {
       this.socket.on('start', this.startPresentation);
       this.socket.on('end', this.updateState);
       this.socket.on('ask', this.askQuestion);
+      this.socket.on('results', this.updateResults);
     }
 
     connect() {
@@ -122,6 +125,12 @@ class App extends Component {
       })
     }
 
+    updateResults(results) {
+      this.setState({
+        results: results,
+      })
+    }
+
     render() {
         return (
           <BrowserRouter>
@@ -142,7 +151,7 @@ class App extends Component {
                 }} />
 
                 <Route path="/board" render={() => {
-                  return (<Board />);
+                  return (<Board {... this.state} />);
                 }} />
 
                 <Route exact path="/" render={(props) => {

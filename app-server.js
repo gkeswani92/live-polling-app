@@ -13,7 +13,7 @@ var audience = []
 var speaker = {}
 var questions = require('./app-questions');
 var currentQuestion = false; // no question is being asked in the beginning
-var result = { // object to store audience response
+var results = { // object to store audience response
     a: 0,
     b: 0,
     c: 0,
@@ -109,7 +109,7 @@ io.sockets.on('connection', (socket) => {
         console.log('Question asked %s', question.q);
 
         // Reset the result for responses
-        result = { 
+        results = { 
             a: 0,
             b: 0,
             c: 0,
@@ -121,8 +121,10 @@ io.sockets.on('connection', (socket) => {
 
     socket.on('answer', (payload) => {
         // When the audience answers a question, increment the number of responses
-        // for that option
-        result[payload.choice]++;
+        // for that option and emit the current state of the results for plotting on
+        // the board
+        results[payload.choice]++;
+        io.sockets.emit('results', results);
     });
 
     // Emit welcome events that will be sent to the client via the socket
@@ -132,6 +134,7 @@ io.sockets.on('connection', (socket) => {
         speaker: speaker.name,
         questions: questions,
         currentQuestion: currentQuestion,
+        results: results,
     });
 
     connections.push(socket);

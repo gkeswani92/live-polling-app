@@ -29,6 +29,7 @@ class Join extends Component {
                        required />
                 <button className="btn btn-primary">Join</button>
                 <Link to="/speaker">Join as Speaker</Link>
+                <Link to="/board">View Results</Link>
             </form>
         );
     }
